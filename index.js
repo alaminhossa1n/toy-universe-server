@@ -51,7 +51,7 @@ async function run() {
         const { category, sort, limit, email, search } = req.query;
         
         let query = toysCollections.find();
-// ca
+
         if (category) {
             query = query.filter({ category });
         }
