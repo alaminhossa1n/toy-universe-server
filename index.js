@@ -59,7 +59,7 @@ async function run() {
         if (email) {
             query = query.filter({ sellerEmail: email });
         }
-
+        
         if (search) {
             query = query.filter({ name: search });
         }
