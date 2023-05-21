@@ -48,8 +48,8 @@ async function run() {
 
     app.get('/toys', async (req, res) => {
 
-        const { category, sort, limit, email } = req.query;
-
+        const { category, sort, limit, email, search } = req.query;
+        
         let query = toysCollections.find();
 
         if (category) {
@@ -58,7 +58,11 @@ async function run() {
 
         if (email) {
             query = query.filter({ sellerEmail: email });
-          }
+        }
+
+        if (search) {
+            query = query.filter({ name: search });
+        }
 
         if (sort === 'asc') {
             query = query.sort({ price: 1 });
