@@ -46,26 +46,71 @@ async function run() {
 
     // get toys by category
 
+    // app.get('/toys', async (req, res) => {
+
+    //     let query = {};
+    //     const limit = (req.query.limit);
+
+    //     if (req.query?.category) {
+    //         query = { category: req.query.category }
+    //     }
+
+    //     if (req.query?.email) {
+    //         query = { sellerEmail: req.query.email }
+    //     }
+
+    //     const result = await toysCollections.find(query).toArray();
+    //     const limitedData = result.slice(0, limit);
+
+    //     if (limitedData) {
+    //         res.send(limitedData);
+    //     } else {
+    //         res.send(result);
+    //     }
+    // })
+
+
     app.get('/toys', async (req, res) => {
-        let query = {};
-        const limit = (req.query.limit);
 
-        if (req.query?.category) {
-            query = { category: req.query.category }
+        const { category, sort, limit, email } = req.query;
+
+        let query = toysCollections.find();
+
+        if (category) {
+            query = query.filter({ category });
         }
 
-        if (req.query?.email) {
-            query = { sellerEmail: req.query.email }
+        if (email) {
+            query = query.filter({ sellerEmail: email });
+          }
+
+        if (sort === 'asc') {
+            query = query.sort({ price: 1 });
+        } else if (sort === 'desc') {
+            query = query.sort({ price: -1 });
         }
 
-        const result = await toysCollections.find(query).toArray();
-        const limitedData = result.slice(0, limit);
-
-        if (limitedData) {
-            res.send(limitedData);
-        } else {
-            res.send(result);
+        if (limit) {
+            const limitValue = parseInt(limit);
+            query = query.limit(limitValue);
         }
+
+        try {
+            const products = await query.toArray();
+            res.send(products);
+        } catch (err) {
+            console.error('Failed to fetch products:', err);
+            res.status(500).send('Internal Server Error');
+        }
+    })
+
+    // get toys by id
+
+    app.get('/toys/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) }
+        const result = await toysCollections.findOne(query)
+        res.send(result);
     })
 
     // delete toy by id
@@ -76,7 +121,29 @@ async function run() {
         res.send(result)
     })
 
+    // update toy
+    app.put('/toys/:id', async (req, res) => {
+        const id = req.params.id
+        const newToy = req.body
+        const filter = { _id: new ObjectId(id) }
+        const options = { upsert: true }
+
+        const updatedToy = {
+            $set: {
+                price: newToy.price,
+                description: newToy.description,
+                quantity: newToy.quantity
+            }
+        }
+
+        const result = await toysCollections.updateOne(filter, updatedToy, options)
+        res.send(result)
+    })
+
+
 }
+
+
 run().catch(console.dir);
 
 
