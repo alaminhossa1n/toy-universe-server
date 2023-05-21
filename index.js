@@ -44,14 +44,14 @@ async function run() {
         res.send(result);
     })
 
-    // get toys by category
+    // get toys by category, sort, limit, email, search
 
     app.get('/toys', async (req, res) => {
 
         const { category, sort, limit, email, search } = req.query;
         
         let query = toysCollections.find();
-
+// ca
         if (category) {
             query = query.filter({ category });
         }
@@ -59,7 +59,7 @@ async function run() {
         if (email) {
             query = query.filter({ sellerEmail: email });
         }
-        
+
         if (search) {
             query = query.filter({ name: search });
         }
