@@ -46,30 +46,6 @@ async function run() {
 
     // get toys by category
 
-    // app.get('/toys', async (req, res) => {
-
-    //     let query = {};
-    //     const limit = (req.query.limit);
-
-    //     if (req.query?.category) {
-    //         query = { category: req.query.category }
-    //     }
-
-    //     if (req.query?.email) {
-    //         query = { sellerEmail: req.query.email }
-    //     }
-
-    //     const result = await toysCollections.find(query).toArray();
-    //     const limitedData = result.slice(0, limit);
-
-    //     if (limitedData) {
-    //         res.send(limitedData);
-    //     } else {
-    //         res.send(result);
-    //     }
-    // })
-
-
     app.get('/toys', async (req, res) => {
 
         const { category, sort, limit, email } = req.query;
